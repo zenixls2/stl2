@@ -21,5 +21,5 @@ namespace std {
 };
 ```
 
-Currently since swig doesn't support multiple paths for `SWIG\_LIB`, 
+Currently since swig doesn't support multiple paths for `SWIG_LIB`, 
 You have to manually write a Makefile to add `-I$GOPATH/src/github.com/zenixls2/stl2` option for swig build flow.
