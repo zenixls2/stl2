@@ -135,6 +135,32 @@ public:
 %enddef
 %define MAP_DEFINE(K, V)
     %template(Iter_ ## K ##_ ## V) _map_iterator<##K, ##V, __map_iterator<MAP_BASE(##K, ##V)::iterator> >;
-    %template(Map_ ## K ##_ ## V) map<##K, ##V>;
+    %template(_Map_ ## K ##_ ## V) map<##K, ##V>;
+%insert(go_wrapper) %{
+type Map_ ## K ## _ ## V interface {
+    X_Map_ ## K ##_ ## V
+    LowerBound(## K) (Iter_ ## K ##_ ## V)
+    UpperBound(## K) (Iter_ ## K ##_ ## V)
+}
+func (arg SwigcptrX_Map_ ## K ##_ ## V) LowerBound(key K) (Iter_##K##_##V) {
+    return NewIter_##K##_##V(arg.Lower_bound(key))
+}
+func (arg SwigcptrX_Map_ ## K ##_ ## V) UpperBound(key K) (Iter_##K##_##V) {
+    return NewIter_##K##_##V(arg.Upper_bound(key))
+}
+func NewMap_##K##_##V(a ...interface{}) (Map_##K##_##V) {
+    argc := len(a)
+    if argc == 0 {
+        return NewX_Map_##K##_##V().(Map_##K##_##V)
+    }
+    if argc == 1 {
+        return NewX_Map_##K##_##V(a).(Map_##K##_##V)
+    }
+    panic("No match for overloaded function call")
+}
+func DeleteMap_##K##_##V(arg Map_##K##_##V) {
+    DeleteX_Map_##K##_##V(arg.(X_Map_##K##_##V))
+}
+%}
 %enddef
 }

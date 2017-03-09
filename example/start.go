@@ -11,7 +11,7 @@ func main() {
 	mapi.Set(2, 2)
 	mapi.Set(3, 4)
 	fmt.Println(mapi.Get(1))
-	iter := stl.NewIter_int_int(mapi.Lower_bound(2))
+	iter := mapi.LowerBound(2)
 	fmt.Println(iter.GetKey(), iter.GetValue())
 	iter.Next()
 	fmt.Println(iter.GetKey(), iter.GetValue())
