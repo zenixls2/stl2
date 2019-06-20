@@ -1,9 +1,10 @@
 %module vector
 %include <std_common.i>
+
 %{
 #include <vector>
 #include <stdexcept>
-}%
+%}
 namespace std {
 template <class T, class Allocator=std::allocator<T> >
 class vector {
@@ -18,17 +19,20 @@ public:
     size_type size() const;
     size_type capacity() const;
     void reserve(size_type n);
-    rename(isEmpty) empty;
+    %rename(isEmpty) empty;
     bool empty() const;
     void clear();
     %rename(add) push_back;
     void push_back(const value_type& x);
     %extend {
-        const_reference get(int i) throw (std::out_of_range) {
+        const_reference get(size_t i) throw (std::out_of_range) {
+            if (i >= 0 && i < self->size())
+                return (*self)[i];
+            else
+                throw std::out_of_range("vector index out of range");
         }
-        void set(int i, const value_type& val) throw (std::out_of_range) {
-            int size = int(self->size());
-            if (i>=0 && i<size)
+        void set(size_t i, const value_type& val) throw (std::out_of_range) {
+            if (i >= 0 && i < self->size())
                 (*self)[i] = val;
             else
                 throw std::out_of_range("vector index out of range");
@@ -52,21 +56,23 @@ public:
     %rename(add) push_back;
     void push_back(const value_type& x);
     %extend {
-        bool get(int i) throw (std::out_of_range) {
-            int size = int(self->size());
-            if (i >= 0 && i < size)
+        bool get(size_t i) throw (std::out_of_range) {
+            if (i >= 0 && i < self->size())
                 return (*self)[i];
             else
                 throw std::out_of_range("vector index out of range");
         }
-        void set(int i, const value_type& val) throw (std::out_of_range) {
-            int size = int(self->size());
-            if (i>=0 && i<size)
+        void set(size_t i, const value_type& val) throw (std::out_of_range) {
+            if (i >= 0 && i < self->size())
                 (*self)[i] = val;
             else
                 throw std::out_of_range("vector index out of range");
         }
     }
 };
+
+%define VECTOR_DEFINE(K)
+    %template(_VECTOR_ ## K) vector<K>;
+%enddef
 
 };
